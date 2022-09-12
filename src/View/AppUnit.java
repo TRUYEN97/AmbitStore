@@ -4,16 +4,12 @@
  */
 package View;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
+import Communicate.Cmd.Cmd;
+import Model.AppParamater;
 import java.awt.Image;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
@@ -23,20 +19,16 @@ import javax.swing.ImageIcon;
  */
 public class AppUnit extends javax.swing.JPanel {
 
+    private Image image;
+    private String appName;
+    private File appFile;
+
     /**
      * Creates new form AppUnit
+     *
      */
     public AppUnit() {
         initComponents();
-        BufferedImage bufferedImage;
-        try {
-            bufferedImage = ImageIO.read(getClass().getResource("icon.png"));
-            Image scaled = bufferedImage.getScaledInstance(50, 50, Image.SCALE_AREA_AVERAGING);
-            ImageIcon icon = new ImageIcon(scaled);
-            this.jLabel1.setIcon(icon);
-        } catch (IOException ex) {
-            Logger.getLogger(AppUnit.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     /**
@@ -48,30 +40,90 @@ public class AppUnit extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
+        lb_icon = new javax.swing.JLabel();
+        lb_name = new javax.swing.JLabel();
 
+        setAlignmentX(0.1F);
+        setAlignmentY(0.1F);
         setPreferredSize(new java.awt.Dimension(100, 120));
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("icon");
-        jLabel1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        lb_icon.setBackground(new java.awt.Color(204, 204, 255));
+        lb_icon.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lb_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lb_icon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        lb_icon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        lb_icon.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lb_iconMouseClicked(evt);
+            }
+        });
+
+        lb_name.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lb_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
+            .addComponent(lb_name, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+            .addComponent(lb_icon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 113, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(lb_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(lb_name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void lb_iconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_iconMouseClicked
+        // TODO add your handling code here:
+        if (appFile == null) {
+            return;
+        }
+        if (evt.getClickCount() > 1) {
+            new Cmd().sendCommand(this.appFile.getPath());
+        }
+    }//GEN-LAST:event_lb_iconMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel lb_icon;
+    private javax.swing.JLabel lb_name;
     // End of variables declaration//GEN-END:variables
+
+    void showIcon() {
+        if (appFile == null || appName == null) {
+            return;
+        }
+        if (image == null) {
+            image = getDefaultImage();
+        }
+        this.lb_icon.setIcon(new ImageIcon(image));
+        this.lb_name.setText(appName);
+    }
+
+    private Image getDefaultImage() {
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(getClass().getResource("empty.png"));
+            return bufferedImage.getScaledInstance(
+                    this.lb_icon.getWidth(), 
+                    this.lb_icon.getHeight(),
+                    Image.SCALE_AREA_AVERAGING);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    void setAppParameter(AppParamater paramater) {
+        if (paramater == null) {
+            return;
+        }
+        this.image = paramater.getIcon();
+        this.appName = paramater.getAppName();
+        this.appFile = paramater.getAppFile();
+    }
 }

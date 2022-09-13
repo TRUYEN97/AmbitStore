@@ -4,8 +4,11 @@
  */
 package View;
 
-import Model.AppParamater;
+import Model.App.AppElement;
+import Model.Setting;
+import java.awt.Toolkit;
 import java.io.File;
+import java.util.List;
 
 /**
  *
@@ -13,8 +16,7 @@ import java.io.File;
  */
 public class UI extends javax.swing.JFrame {
 
-    private int row;
-    private int column;
+    private final Setting setting;
 
     /**
      * Creates new form UI
@@ -46,19 +48,18 @@ public class UI extends javax.swing.JFrame {
         /* Create and display the form */
         this.storePanel = new StorePanel();
         initComponents();
-        updateStore();
+        this.setting = Setting.getInstance();
+        this.setIconImage(Toolkit.getDefaultToolkit().createImage(this.setting.getMyIconPath()));
+        String version = setting.getVersion();
+        this.setTitle(String.format("AmbitStore - %s", version == null ? "" : version));
+        this.storePanel.setGridZise(3, 5);
     }
 
-    public final void updateStore() {
-        this.storePanel.setGridZise(3, 8);
-        this.storePanel.display();
+    public boolean addApps(List<AppElement> apps) {
+        return this.storePanel.addApps(apps);
     }
 
-    public boolean addAppParameter(AppParamater appParamater) {
-        return this.storePanel.addApp(appParamater);
-    }
-
-    public boolean addAppParameter(int index, AppParamater appParamater) {
+    public boolean addAppParameter(int index, AppElement appParamater) {
         return this.storePanel.addApp(index, appParamater);
     }
 
@@ -76,10 +77,10 @@ public class UI extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
 
+        storeBackground.setBackground(new java.awt.Color(255, 255, 255));
         storeBackground.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         storeBackground.setAutoscrolls(true);
 
@@ -87,11 +88,11 @@ public class UI extends javax.swing.JFrame {
         storeBackground.setLayout(storeBackgroundLayout);
         storeBackgroundLayout.setHorizontalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 534, Short.MAX_VALUE)
+            .addGap(0, 552, Short.MAX_VALUE)
         );
         storeBackgroundLayout.setVerticalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 273, Short.MAX_VALUE)
+            .addGap(0, 465, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -112,15 +113,15 @@ public class UI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())

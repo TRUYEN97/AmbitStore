@@ -4,7 +4,7 @@
  */
 package View;
 
-import Model.AppParamater;
+import Model.App.AppElement;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author Administrator
  */
 public class StorePanel extends javax.swing.JPanel {
-
+    
     private final List<AppUnit> appUnits;
 
     /**
@@ -24,10 +24,10 @@ public class StorePanel extends javax.swing.JPanel {
         this.appUnits = new ArrayList<>();
         initComponents();
     }
-
+    
     public void setGridZise(int rows, int columns) {
         this.removeAll();
-        this.setLayout(new GridLayout(rows, columns, 10 , 0));
+        this.setLayout(new GridLayout(rows, columns, 5, 10));
         AppUnit appUnit;
         for (int i = 0; i < rows * columns; i++) {
             appUnit = new AppUnit();
@@ -37,25 +37,30 @@ public class StorePanel extends javax.swing.JPanel {
         this.validate();
     }
     
-    boolean addApp(AppParamater appParamater) {
-        return addApp(this.appUnits.size(),appParamater);
+    boolean addApps(List<AppElement> apps) {
+        for (AppElement app : apps) {
+            if (!addApp(apps.indexOf(app), app)) {
+                return false;
+            }
+        }
+        return true;
     }
-
-    boolean addApp(int index, AppParamater paramater) {
-       if(index >= this.appUnits.size() || index < 0){
-           return false;
-       }
-       AppUnit appUnit = this.appUnits.get(index);
-       appUnit.setAppParameter(paramater);
-       appUnit.showIcon();
-       this.updateUI();
-       return true;
+    
+    boolean addApp(int index, AppElement paramater) {
+        if (index >= this.appUnits.size() || index < 0) {
+            return false;
+        }
+        AppUnit appUnit = this.appUnits.get(index);
+        appUnit.setAppParameter(paramater);
+        appUnit.display();
+        this.updateUI();
+        return true;
     }
-
+    
     public void display() {
         this.validate();
         for (AppUnit appUnit : appUnits) {
-            appUnit.showIcon();
+            appUnit.display();
         }
     }
 
@@ -81,7 +86,6 @@ public class StorePanel extends javax.swing.JPanel {
             .addGap(0, 294, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

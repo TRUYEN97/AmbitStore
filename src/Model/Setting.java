@@ -15,13 +15,28 @@ import java.nio.file.FileSystemNotFoundException;
  */
 public class Setting {
 
+    private static volatile Setting instance;
     private final JSONObject setting;
     private final FileService fileService;
 
-    public Setting(String path) {
+    private Setting() {
         this.setting = new JSONObject();
         this.fileService = new FileService();
-        init(new File(path));
+        init(new File("bin/Config/setting.json"));
+    }
+    
+    public static Setting getInstance()
+    {
+        Setting ins = Setting.instance;
+        if (ins == null) {
+            synchronized (Setting.class) {
+                ins = Setting.instance;
+                if (ins == null) {
+                    Setting.instance = ins = new Setting();
+                }
+            }
+        }
+        return ins;
     }
 
     private void init(File file) {
@@ -46,5 +61,21 @@ public class Setting {
 
     public String getVersion() {
         return getString(AllKeyword.VERSION);
+    }
+
+    public String getStoreFolder() {
+        return getString(AllKeyword.STORE_FOLDER);
+    }
+
+    public String getMyIconPath() {
+        return getString(AllKeyword.MY_ICON_PATH);
+    }
+    
+    public String getAppIconPath() {
+        return getString(AllKeyword.APP_ICON_PATH);
+    }
+    
+    public String getRunFile() {
+        return getString(AllKeyword.RUN_FILE);
     }
 }

@@ -14,15 +14,15 @@ import View.UI;
 public class Engine {
     private final UI ui;
     private final Core core;
-    private final Setting setting;
 
     public Engine() {
+        Setting.getInstance();
         this.ui = new UI();
-        this.core = new Core();
-        this.setting = new Setting("Config/setting.json");
+        this.core = new Core(this.ui);
     }
 
     public void run() {
+        this.core.run();
         this.ui.display();
     }
     

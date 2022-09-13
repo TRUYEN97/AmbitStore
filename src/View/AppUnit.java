@@ -4,8 +4,7 @@
  */
 package View;
 
-import Communicate.Cmd.Cmd;
-import Model.AppParamater;
+import Model.App.AppElement;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -19,9 +18,7 @@ import javax.swing.ImageIcon;
  */
 public class AppUnit extends javax.swing.JPanel {
 
-    private Image image;
-    private String appName;
-    private File appFile;
+    private AppElement appElement;
 
     /**
      * Creates new form AppUnit
@@ -41,8 +38,8 @@ public class AppUnit extends javax.swing.JPanel {
     private void initComponents() {
 
         lb_icon = new javax.swing.JLabel();
-        lb_name = new javax.swing.JLabel();
 
+        setBackground(new java.awt.Color(255, 255, 255));
         setAlignmentX(0.1F);
         setAlignmentY(0.1F);
         setPreferredSize(new java.awt.Dimension(100, 120));
@@ -58,72 +55,77 @@ public class AppUnit extends javax.swing.JPanel {
             }
         });
 
-        lb_name.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        lb_name.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(lb_name, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-            .addComponent(lb_icon, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(lb_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lb_name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void lb_iconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_iconMouseClicked
         // TODO add your handling code here:
-        if (appFile == null) {
-            return;
-        }
         if (evt.getClickCount() > 1) {
-            new Cmd().sendCommand(this.appFile.getPath());
+            this.appElement.run();
         }
     }//GEN-LAST:event_lb_iconMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lb_icon;
-    private javax.swing.JLabel lb_name;
     // End of variables declaration//GEN-END:variables
 
-    void showIcon() {
-        if (appFile == null || appName == null) {
+    void display() {
+        if (this.appElement.getName() == null || this.appElement.getRunFile() == null) {
             return;
         }
-        if (image == null) {
-            image = getDefaultImage();
+        if (this.appElement.getIcon() == null) {
+            this.lb_icon.setIcon(getDefaultImage());
+        } else {
+            this.lb_icon.setIcon(createIcon(this.appElement.getIcon()));
         }
-        this.lb_icon.setIcon(new ImageIcon(image));
-        this.lb_name.setText(appName);
+        this.lb_icon.setText(this.appElement.getName());
     }
 
-    private Image getDefaultImage() {
-        BufferedImage bufferedImage;
+    private ImageIcon createIcon(File icon) {
         try {
-            bufferedImage = ImageIO.read(getClass().getResource("empty.png"));
-            return bufferedImage.getScaledInstance(
-                    this.lb_icon.getWidth(), 
-                    this.lb_icon.getHeight(),
-                    Image.SCALE_AREA_AVERAGING);
+            BufferedImage image = ImageIO.read(icon);
+            return new ImageIcon(resizeIcon(image));
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    private ImageIcon getDefaultImage() {
+        try {
+            return new ImageIcon(resizeIcon(ImageIO.read(getClass().getResource("empty.png"))));
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    void setAppParameter(AppParamater paramater) {
-        if (paramater == null) {
+    private Image resizeIcon(BufferedImage bufferedImage) {
+        return bufferedImage.getScaledInstance(
+                (int) (this.lb_icon.getWidth() * 0.8),
+                (int) (this.lb_icon.getHeight() * 0.6),
+                Image.SCALE_AREA_AVERAGING);
+    }
+
+    void setAppParameter(AppElement appElement) {
+        if (appElement == null) {
             return;
         }
-        this.image = paramater.getIcon();
-        this.appName = paramater.getAppName();
-        this.appFile = paramater.getAppFile();
+        this.appElement = appElement;
     }
 }

@@ -1,0 +1,10 @@
+{
+    "store": "bin/store",
+    "version": "alpha",
+    "app_icon": "icon/icon.png",
+    "my_icon": "bin/icon/icon.png",
+    "run_app": "run.bat",
+    "server_host": "localhost",
+    "server_port": 6200
+}
+

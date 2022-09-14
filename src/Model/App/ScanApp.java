@@ -5,7 +5,7 @@
 package Model.App;
 
 import Model.AllKeyword;
-import Model.Setting;
+import Model.Source.Setting;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

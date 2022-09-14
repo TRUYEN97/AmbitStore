@@ -5,8 +5,7 @@
 package Model.App;
 
 import Communicate.Cmd.Cmd;
-import Model.AllKeyword;
-import Model.Setting;
+import Model.Source.Setting;
 import Robot.MyControl;
 import java.io.File;
 

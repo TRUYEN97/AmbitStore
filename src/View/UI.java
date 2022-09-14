@@ -5,9 +5,10 @@
 package View;
 
 import Model.App.AppElement;
-import Model.Setting;
+import Model.Source.Setting;
+import java.awt.Color;
 import java.awt.Toolkit;
-import java.io.File;
+import java.awt.event.KeyEvent;
 import java.util.List;
 
 /**
@@ -20,8 +21,10 @@ public class UI extends javax.swing.JFrame {
 
     /**
      * Creates new form UI
+     *
+     * @param title
      */
-    public UI() {
+    public UI(String title) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -50,8 +53,7 @@ public class UI extends javax.swing.JFrame {
         initComponents();
         this.setting = Setting.getInstance();
         this.setIconImage(Toolkit.getDefaultToolkit().createImage(this.setting.getMyIconPath()));
-        String version = setting.getVersion();
-        this.setTitle(String.format("AmbitStore - %s", version == null ? "" : version));
+        this.setTitle(title);
         this.storePanel.setGridZise(3, 5);
     }
 
@@ -74,9 +76,14 @@ public class UI extends javax.swing.JFrame {
 
         jPanel1 = new javax.swing.JPanel();
         storeBackground = this.storePanel;
-        jPanel2 = new javax.swing.JPanel();
+        pn_connect = new javax.swing.JPanel();
+        lb_serverName = new javax.swing.JLabel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
 
@@ -88,22 +95,36 @@ public class UI extends javax.swing.JFrame {
         storeBackground.setLayout(storeBackgroundLayout);
         storeBackgroundLayout.setHorizontalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 552, Short.MAX_VALUE)
+            .addGap(0, 558, Short.MAX_VALUE)
         );
         storeBackgroundLayout.setVerticalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 465, Short.MAX_VALUE)
         );
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 148, Short.MAX_VALUE)
+        pn_connect.setBackground(new java.awt.Color(51, 255, 51));
+
+        lb_serverName.setBackground(new java.awt.Color(204, 204, 255));
+        lb_serverName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lb_serverName.setText("...");
+        lb_serverName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        lb_serverName.setOpaque(true);
+
+        javax.swing.GroupLayout pn_connectLayout = new javax.swing.GroupLayout(pn_connect);
+        pn_connect.setLayout(pn_connectLayout);
+        pn_connectLayout.setHorizontalGroup(
+            pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_connectLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                .addContainerGap())
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        pn_connectLayout.setVerticalGroup(
+            pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pn_connectLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -112,8 +133,8 @@ public class UI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addComponent(pn_connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
@@ -122,8 +143,10 @@ public class UI extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(pn_connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -144,6 +167,17 @@ public class UI extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+        // TODO add your handling code here:
+        if (evt.isControlDown()) {
+            if (evt.isAltDown() && evt.getKeyCode() == KeyEvent.VK_Q) {
+                System.exit(0);
+            } else if (evt.getKeyCode() == KeyEvent.VK_H) {
+                this.setVisible(false);
+            }
+        }
+    }//GEN-LAST:event_formKeyPressed
+
     public void display() {
         java.awt.EventQueue.invokeLater(() -> {
             this.setVisible(true);
@@ -152,8 +186,21 @@ public class UI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lb_serverName;
+    private javax.swing.JPanel pn_connect;
     private javax.swing.JPanel storeBackground;
     // End of variables declaration//GEN-END:variables
     private final StorePanel storePanel;
+
+    public void showServerAddr(String format) {
+        this.lb_serverName.setText(format);
+    }
+
+    public void setServerConnect(boolean connect) {
+        if (connect) {
+            this.pn_connect.setBackground(Color.green);
+        } else {
+            this.pn_connect.setBackground(Color.red);
+        }
+    }
 }

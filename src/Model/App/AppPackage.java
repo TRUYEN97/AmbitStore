@@ -4,7 +4,7 @@
  */
 package Model.App;
 
-import Model.Setting;
+import Model.Source.Setting;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -5,9 +5,11 @@
 package Main;
 
 import Control.Engine;
+import Model.Loger;
 import Model.Source.Setting;
 import Robot.MyControl;
 import Robot.W32API.HWND;
+import Time.TimeBase;
 import java.io.IOException;
 
 /**
@@ -26,6 +28,8 @@ public class Main {
             return;
         }
         try {
+            String filePath = String.format("log/%s", new TimeBase().getDate());
+            Loger.getInstance().init(filePath);
             new Engine(title).run();
         } catch (IOException ex) {
             ex.printStackTrace();

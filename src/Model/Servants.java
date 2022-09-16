@@ -35,6 +35,8 @@ public class Servants {
     
     public void ftpDownload(String ftpPath, String localFile) {
         ftpClient.connect(ftpPath, 0);
-        ftpClient.downloadFile(ftpPath, localFile);
+        if(ftpClient.downloadFile(ftpPath, localFile)){
+            System.out.println(ftpPath+" "+localFile);
+        }
     }
 }

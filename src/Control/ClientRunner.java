@@ -2,15 +2,16 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Control.Client;
+package Control;
 
+import Model.Socket.ClientReceiver;
+import Model.Socket.ClientSender;
 import Model.AllKeyword;
 import Model.Source.Setting;
 import Unicast.Client.Client;
-import Unicast.commons.Actions.SimplePackage;
+import Unicast.commons.Actions.simplePackage;
 import View.UI;
 import java.io.IOException;
-import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -19,19 +20,18 @@ import javax.swing.Timer;
  */
 public class ClientRunner implements Runnable {
 
-    private final Setting setting;
-    private final Client<SimplePackage> client;
+    private final Client<simplePackage> client;
 
-    public ClientRunner(UI display) throws IOException {
-        this.client = new Client(new ClientReceiver(display));
-        this.setting = Setting.getInstance();
+    public ClientRunner(UI display, ClientReceiver receiver, ClientSender sender) throws IOException {
+        this.client = new Client(receiver);
+        sender.setClient(client);
         new Timer(1000, (e) -> {
             if (!this.client.isConnect()) {
-                String host = setting.getString(AllKeyword.SERVER_HOST);
-                int port = setting.getInteger(AllKeyword.SERVER_PORT);
+                String host = Setting.getInstance().getString(AllKeyword.SERVER_HOST);
+                int port = Setting.getInstance().getInteger(AllKeyword.SERVER_PORT);
                 this.client.connect(host, port);
                 display.showServerAddr(
-                        String.format("<html><center>Host: %s</center><br>Post: %s</html>", host, port));
+                        String.format("Host: %s  -  Post: %s", host, port));
             }
             display.setServerConnect(this.client.isConnect());
         }).start();
@@ -48,12 +48,6 @@ public class ClientRunner implements Runnable {
                 } catch (InterruptedException ex) {
                 }
             }
-        }
-    }
-
-    public void send(SimplePackage simplePackage) {
-        if (!this.client.send(simplePackage)) {
-            JOptionPane.showMessageDialog(null, "Request to server failed!");
         }
     }
 

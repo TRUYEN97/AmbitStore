@@ -2,17 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Control.Client;
+package Model.Socket;
 
-import Communicate.Cmd.Cmd;
 import FileTool.FileService;
 import Model.PcInformation;
 import Model.Servants;
 import Unicast.commons.Actions.FileTransfer;
-import Unicast.commons.Actions.Object.List.ListPackage;
 import Unicast.commons.Actions.Object.MyName;
 import Unicast.commons.Actions.Object.ObjectPackage;
-import Unicast.commons.Actions.SimplePackage;
+import Unicast.commons.Actions.simplePackage;
 import Unicast.commons.Interface.ISend;
 import Unicast.commons.Interface.IObjectReceiver;
 import View.UI;
@@ -22,21 +20,21 @@ import java.util.Map;
  *
  * @author Administrator
  */
-public class ClientReceiver implements IObjectReceiver<SimplePackage> {
+public class ClientReceiver implements IObjectReceiver<simplePackage> {
 
-    private ISend<SimplePackage> handler;
+    private ISend<simplePackage> handler;
     private final UI display;
     private final FileService fileService;
     private final Servants servants;
 
-    public ClientReceiver(UI display) {
+    public ClientReceiver(Servants servants, UI display) {
         this.display = display;
         this.fileService = new FileService();
-        this.servants = new Servants();
+        this.servants = servants;
     }
 
     @Override
-    public void receiver(SimplePackage pkg) {
+    public void receiver(simplePackage pkg) {
         switch (pkg.getAction()) {
             case WHO_ARE_U -> {
                 PcInformation pcInfo = PcInformation.getInstance();
@@ -66,6 +64,7 @@ public class ClientReceiver implements IObjectReceiver<SimplePackage> {
                 }
                 this.fileService.saveFile(path, data);
             }
+            
             case DOWN_LOAD -> {
                 ObjectPackage<Map<String, String>> fileTransfer = (ObjectPackage<Map<String, String>>) pkg;
                 servants.ftpDownload(fileTransfer.getdata());
@@ -75,7 +74,7 @@ public class ClientReceiver implements IObjectReceiver<SimplePackage> {
     }
 
     @Override
-    public void setHandler(ISend<SimplePackage> handler) {
+    public void setHandler(ISend<simplePackage> handler) {
         this.handler = handler;
     }
 

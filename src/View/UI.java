@@ -5,11 +5,13 @@
 package View;
 
 import Model.App.AppElement;
+import Model.Socket.ClientSender;
 import Model.Source.Setting;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -18,13 +20,15 @@ import java.util.List;
 public class UI extends javax.swing.JFrame {
 
     private final Setting setting;
+    private final ClientSender clientSender;
 
     /**
      * Creates new form UI
      *
      * @param title
+     * @param clientSender
      */
-    public UI(String title) {
+    public UI(String title, ClientSender clientSender) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -52,6 +56,7 @@ public class UI extends javax.swing.JFrame {
         this.storePanel = new StorePanel();
         initComponents();
         this.setting = Setting.getInstance();
+        this.clientSender = clientSender;
         this.setIconImage(Toolkit.getDefaultToolkit().createImage(this.setting.getMyIconPath()));
         this.setTitle(title);
         this.storePanel.setGridZise(3, 5);
@@ -78,6 +83,7 @@ public class UI extends javax.swing.JFrame {
         storeBackground = this.storePanel;
         pn_connect = new javax.swing.JPanel();
         lb_serverName = new javax.swing.JLabel();
+        lb_update = new javax.swing.JLabel();
 
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -95,11 +101,11 @@ public class UI extends javax.swing.JFrame {
         storeBackground.setLayout(storeBackgroundLayout);
         storeBackgroundLayout.setHorizontalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 558, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         storeBackgroundLayout.setVerticalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
+            .addGap(0, 421, Short.MAX_VALUE)
         );
 
         pn_connect.setBackground(new java.awt.Color(51, 255, 51));
@@ -110,20 +116,35 @@ public class UI extends javax.swing.JFrame {
         lb_serverName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lb_serverName.setOpaque(true);
 
+        lb_update.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lb_update.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lb_update.setText("Update");
+        lb_update.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        lb_update.setOpaque(true);
+        lb_update.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                lb_updateMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout pn_connectLayout = new javax.swing.GroupLayout(pn_connect);
         pn_connect.setLayout(pn_connectLayout);
         pn_connectLayout.setHorizontalGroup(
             pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_connectLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(25, 25, 25)
+                .addComponent(lb_update, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(35, 35, 35)
+                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+                .addGap(16, 16, 16))
         );
         pn_connectLayout.setVerticalGroup(
             pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pn_connectLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+                .addGroup(pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(lb_update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -133,20 +154,18 @@ public class UI extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pn_connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(pn_connect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(pn_connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addComponent(pn_connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -166,6 +185,17 @@ public class UI extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void lb_updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_updateMouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() > 1) {
+            if (!this.clientSender.update()) {
+                JOptionPane.showMessageDialog(null, "Update failed!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Update success!");
+            }
+        }
+    }//GEN-LAST:event_lb_updateMouseClicked
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         // TODO add your handling code here:
@@ -187,6 +217,7 @@ public class UI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel lb_serverName;
+    private javax.swing.JLabel lb_update;
     private javax.swing.JPanel pn_connect;
     private javax.swing.JPanel storeBackground;
     // End of variables declaration//GEN-END:variables

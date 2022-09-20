@@ -5,6 +5,7 @@
 package View;
 
 import Model.App.AppElement;
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -43,42 +44,62 @@ public class AppUnit extends javax.swing.JPanel {
         setAlignmentX(0.1F);
         setAlignmentY(0.1F);
         setPreferredSize(new java.awt.Dimension(100, 120));
+        addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                formMouseClicked(evt);
+            }
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                formMouseEntered(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                formMouseExited(evt);
+            }
+        });
 
         lb_icon.setBackground(new java.awt.Color(204, 204, 255));
         lb_icon.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lb_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lb_icon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         lb_icon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        lb_icon.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lb_iconMouseClicked(evt);
-            }
-        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void lb_iconMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_iconMouseClicked
+    private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
         // TODO add your handling code here:
-        if (evt.getClickCount() > 1) {
+        if (isAppAvaiable()) {
+            this.setBackground(this.getBackground().darker());
+        }
+    }//GEN-LAST:event_formMouseEntered
+
+    private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
+        // TODO add your handling code here:
+        if (isAppAvaiable() && evt.getClickCount() > 1) {
             this.appElement.run();
         }
-    }//GEN-LAST:event_lb_iconMouseClicked
+    }//GEN-LAST:event_formMouseClicked
+
+    private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
+        // TODO add your handling code here:
+        if (isAppAvaiable()) {
+            this.setBackground(this.getBackground().brighter());
+        }
+    }//GEN-LAST:event_formMouseExited
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -86,7 +107,7 @@ public class AppUnit extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     void display() {
-        if (this.appElement.getName() == null || this.appElement.getRunFile() == null) {
+        if (!isAppAvaiable()) {
             return;
         }
         if (this.appElement.getIcon() == null) {
@@ -95,6 +116,10 @@ public class AppUnit extends javax.swing.JPanel {
             this.lb_icon.setIcon(createIcon(this.appElement.getIcon()));
         }
         this.lb_icon.setText(this.appElement.getName());
+    }
+
+    private boolean isAppAvaiable() {
+        return this.appElement != null && this.appElement.getName() != null && this.appElement.getRunFile() != null;
     }
 
     private ImageIcon createIcon(File icon) {

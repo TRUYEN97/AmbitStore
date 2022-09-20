@@ -6,6 +6,8 @@ package Model;
 
 import Communicate.Cmd.Cmd;
 import Communicate.FtpClient.FtpClient;
+import Model.Socket.ClientReceiver;
+import Model.Socket.ClientSender;
 import java.util.Map;
 
 /**
@@ -15,13 +17,26 @@ import java.util.Map;
 public class Servants {
 
     private final FtpClient ftpClient;
+    private final ClientReceiver clientReceiver;
+    private final ClientSender clientSender;
     private final Cmd cmd;
     private String ftpHost;
 
     public Servants() {
         this.ftpClient = new FtpClient();
         this.cmd = new Cmd();
+        this.clientReceiver = new ClientReceiver(this);
+        this.clientSender = new ClientSender(this);
     }
+
+    public ClientReceiver getClientReceiver() {
+        return clientReceiver;
+    }
+
+    public ClientSender getClientSender() {
+        return clientSender;
+    }
+    
 
     public boolean runCmd(String command) {
         return cmd.sendCommand(command);
@@ -38,5 +53,9 @@ public class Servants {
         if(ftpClient.downloadFile(ftpPath, localFile)){
             System.out.println(ftpPath+" "+localFile);
         }
+    }
+
+    public void sendMyName() {
+        this.clientSender.sendMyName();
     }
 }

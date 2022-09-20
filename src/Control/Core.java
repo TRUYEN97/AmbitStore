@@ -5,8 +5,7 @@
 package Control;
 
 import Model.App.AppPackage;
-import Model.Socket.ClientReceiver;
-import Model.Socket.ClientSender;
+import Model.Servants;
 import View.UI;
 import java.io.IOException;
 
@@ -16,23 +15,22 @@ import java.io.IOException;
  */
 public class Core {
 
-    private final AppPackage appMangement;  
+    private final AppPackage appMangement;
     private final ClientRunner clientRunner;
     private final UI ui;
 
-    public Core(UI ui, ClientReceiver receiver, ClientSender sender) throws IOException {
+    public Core(UI ui, Servants servants) throws IOException {
         this.appMangement = new AppPackage();
         this.ui = ui;
-        this.clientRunner = new ClientRunner(ui, receiver, sender);
+        this.clientRunner = new ClientRunner(ui, servants);
     }
 
     public ClientRunner getClientRunner() {
         return clientRunner;
     }
-    
 
     void run() {
-        new Thread(clientRunner).start();
+        this.clientRunner.start();
         this.appMangement.scanApps();
         this.ui.addApps(this.appMangement.getApps());
     }

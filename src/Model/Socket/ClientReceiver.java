@@ -5,13 +5,11 @@
 package Model.Socket;
 
 import FileTool.FileService;
-import Model.PcInformation;
+import Model.Loger;
 import Model.Servants;
 import Unicast.commons.Actions.FileTransfer;
-import Unicast.commons.Actions.Object.MyName;
 import Unicast.commons.Actions.Object.ObjectPackage;
 import Unicast.commons.Actions.simplePackage;
-import Unicast.commons.Interface.ISend;
 import Unicast.commons.Interface.IObjectReceiver;
 import View.UI;
 import java.util.Map;
@@ -21,14 +19,11 @@ import java.util.Map;
  * @author Administrator
  */
 public class ClientReceiver implements IObjectReceiver<simplePackage> {
-
-    private ISend<simplePackage> handler;
-    private final UI display;
+   
     private final FileService fileService;
     private final Servants servants;
 
-    public ClientReceiver(Servants servants, UI display) {
-        this.display = display;
+    public ClientReceiver(Servants servants) {
         this.fileService = new FileService();
         this.servants = servants;
     }
@@ -37,12 +32,7 @@ public class ClientReceiver implements IObjectReceiver<simplePackage> {
     public void receiver(simplePackage pkg) {
         switch (pkg.getAction()) {
             case WHO_ARE_U -> {
-                PcInformation pcInfo = PcInformation.getInstance();
-                this.handler.send(new MyName(
-                        pcInfo.getComputerName(),
-                        pcInfo.getSystemName(),
-                        pcInfo.getLine(),
-                        pcInfo.getAllHardwareAddress()));
+                this.servants.sendMyName();
             }
             
             case RUN -> {
@@ -51,7 +41,7 @@ public class ClientReceiver implements IObjectReceiver<simplePackage> {
             }
             
             case GOOD_BYE -> {
-                System.exit(0);
+                System.out.println("bye bye");
             }
             
             case FILE_TRANSFER -> {
@@ -62,7 +52,8 @@ public class ClientReceiver implements IObjectReceiver<simplePackage> {
                 if (path == null || length != data.length) {
                     return;
                 }
-                this.fileService.saveFile(path, data);
+                Loger.getInstance().addLog("FILE_TRANSFER", String.format("%s - %s", path, 
+                this.fileService.saveFile(path, data)));
             }
             
             case DOWN_LOAD -> {
@@ -71,11 +62,6 @@ public class ClientReceiver implements IObjectReceiver<simplePackage> {
             }
 
         }
-    }
-
-    @Override
-    public void setHandler(ISend<simplePackage> handler) {
-        this.handler = handler;
     }
 
 }

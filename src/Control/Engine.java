@@ -23,18 +23,14 @@ public class Engine {
     private final UI ui;
     private final Core core;
     private final MySystemTray systemTray;
-    private final ClientSender clientSender;
-    private final ClientReceiver clientReceiver;
     private final Servants servants;
     private final String title;
 
     public Engine(String title) throws IOException {
         this.title = title;
         this.servants = new Servants();
-        this.clientSender = new ClientSender();
-        this.ui = new UI(title, clientSender);
-        this.clientReceiver = new ClientReceiver(servants, ui);
-        this.core = new Core(this.ui, clientReceiver, clientSender);
+        this.ui = new UI(title, this.servants);
+        this.core = new Core(this.ui, this.servants);
         this.systemTray = new MySystemTray(ui);
     }
 

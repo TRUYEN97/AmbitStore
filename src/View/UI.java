@@ -5,6 +5,7 @@
 package View;
 
 import Model.App.AppElement;
+import Model.Servants;
 import Model.Socket.ClientSender;
 import Model.Source.Setting;
 import java.awt.Color;
@@ -20,15 +21,15 @@ import javax.swing.JOptionPane;
 public class UI extends javax.swing.JFrame {
 
     private final Setting setting;
-    private final ClientSender clientSender;
+    private final Servants servants;
 
     /**
      * Creates new form UI
      *
      * @param title
-     * @param clientSender
+     * @param servants
      */
-    public UI(String title, ClientSender clientSender) {
+    public UI(String title, Servants servants) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -56,7 +57,7 @@ public class UI extends javax.swing.JFrame {
         this.storePanel = new StorePanel();
         initComponents();
         this.setting = Setting.getInstance();
-        this.clientSender = clientSender;
+        this.servants = servants;
         this.setIconImage(Toolkit.getDefaultToolkit().createImage(this.setting.getMyIconPath()));
         this.setTitle(title);
         this.storePanel.setGridZise(3, 5);
@@ -93,7 +94,7 @@ public class UI extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
 
-        storeBackground.setBackground(new java.awt.Color(255, 255, 255));
+        storeBackground.setBackground(new java.awt.Color(214, 214, 255));
         storeBackground.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         storeBackground.setAutoscrolls(true);
 
@@ -189,10 +190,8 @@ public class UI extends javax.swing.JFrame {
     private void lb_updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_updateMouseClicked
         // TODO add your handling code here:
         if (evt.getClickCount() > 1) {
-            if (!this.clientSender.update()) {
+            if (!this.servants.getClientSender().update()) {
                 JOptionPane.showMessageDialog(null, "Update failed!");
-            } else {
-                JOptionPane.showMessageDialog(null, "Update success!");
             }
         }
     }//GEN-LAST:event_lb_updateMouseClicked

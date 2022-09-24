@@ -4,14 +4,11 @@
  */
 package Control;
 
-import Model.Socket.ClientReceiver;
 import Model.Socket.ClientSender;
 import Model.AllKeyword;
-import Model.PcInformation;
 import Model.Servants;
 import Model.Source.Setting;
 import Unicast.Client.Client;
-import Unicast.commons.Actions.Object.MyName;
 import Unicast.commons.Actions.simplePackage;
 import View.UI;
 import java.io.IOException;

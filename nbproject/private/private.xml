@@ -2,6 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="3"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/Ambit-module/AmbitStore/src/Control/ClientRunner.java</file>
+            <file>file:/D:/Ambit-module/AmbitStore/src/Control/Core.java</file>
+            <file>file:/D:/Ambit-module/AmbitStore/src/Model/Socket/ClientReceiver.java</file>
+            <file>file:/D:/Ambit-module/AmbitStore/src/Model/Source/Setting.java</file>
+        </group>
     </open-files>
 </project-private>

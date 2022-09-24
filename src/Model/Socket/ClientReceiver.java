@@ -11,8 +11,8 @@ import Unicast.commons.Actions.FileTransfer;
 import Unicast.commons.Actions.Object.ObjectPackage;
 import Unicast.commons.Actions.simplePackage;
 import Unicast.commons.Interface.IObjectReceiver;
-import View.UI;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -38,6 +38,11 @@ public class ClientReceiver implements IObjectReceiver<simplePackage> {
             case RUN -> {
                 ObjectPackage<String> command = (ObjectPackage<String>) pkg;
                 servants.runCmd(command.getdata());
+            }
+            
+            case MESSAGE -> {
+                ObjectPackage<String> command = (ObjectPackage<String>) pkg;
+                JOptionPane.showMessageDialog(null, command.getdata());
             }
             
             case GOOD_BYE -> {

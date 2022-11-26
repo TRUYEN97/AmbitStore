@@ -1,10 +1,23 @@
 {
-    "store": "bin/store",
+    "ftp ip": "10.90.100.177",
+    "ftp port": 21,
+    "ftp pass": "Foxconn168!!",
+    "ftp user": "admin",
+    
+    "store": "bin/Store",
+    "temp": "bin/Temp/App",
     "version": "alpha",
-    "app_icon": "icon/icon.png",
-    "my_icon": "bin/icon/icon.png",
+    "app_icon": "Icon/icon.png",
+    "my_icon": "bin/Icon/icon.png",
     "run_app": "run.bat",
+    "app_run_cmd": {
+        "jar":"java -jar"
+    },
+    
     "server_host": "localhost",
-    "server_port": 6200
+    "store_server_port": 6500,
+    "server_port": 6200,
+    "grid_row": 3,
+    "grid_column": 5
 }
 

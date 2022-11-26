@@ -4,14 +4,18 @@
  */
 package View;
 
-import Model.App.AppElement;
+import Model.Application.AppEntity.IappParameter;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 
 /**
  *
@@ -19,14 +23,103 @@ import javax.swing.ImageIcon;
  */
 public class AppUnit extends javax.swing.JPanel {
 
-    private AppElement appElement;
+    private IappParameter appElement;
+    private String description;
+    private String appName;
+    private Image image;
+    private final Color bgColor;
+    private final JPopupMenu popupMenu;
+    private Thread thread;
 
     /**
      * Creates new form AppUnit
      *
+     * @param bgColor
      */
-    public AppUnit() {
+    public AppUnit(Color bgColor) {
+        this.bgColor = bgColor;
         initComponents();
+        this.setBackground(bgColor);
+        this.popupMenu = new JPopupMenu();
+        JMenuItem menuRun = new JMenuItem("Run");
+        menuRun.addActionListener((e) -> {
+            if (isAppAvaiable()) {
+                runApp();
+            }
+        });
+        JMenuItem menuStop = new JMenuItem("Stop");
+        menuStop.addActionListener((e) -> {
+            if (isAppAvaiable() && this.appElement.isRuning()) {
+                stopApp();
+            }
+        });
+        JMenuItem menuThuNhiem = new JMenuItem("Optional Mode");
+        menuThuNhiem.addActionListener((e) -> {
+            System.out.println("Optional Mode");
+        });
+        this.popupMenu.add(menuRun);
+        this.popupMenu.add(menuStop);
+        this.popupMenu.add(menuThuNhiem);
+    }
+
+    private void stopApp() {
+        if (thread != null && thread.isAlive()) {
+            return;
+        }
+        this.thread = new Thread() {
+            @Override
+            public void run() {
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                appElement.shutdown();
+                setCursor(Cursor.getDefaultCursor());
+            }
+        };
+        this.thread.start();
+    }
+
+    private void runApp() {
+        if (thread != null && thread.isAlive()) {
+            return;
+        }
+        this.thread = new Thread() {
+            @Override
+            public void run() {
+                setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                appElement.runApp();
+                setCursor(Cursor.getDefaultCursor());
+            }
+        };
+        this.thread.start();
+    }
+
+    public boolean isAppAvaiable() {
+        return this.appElement != null && this.appElement.getAppName() != null;
+    }
+
+    synchronized void setApp(IappParameter app) {
+        unDisplay();
+        new Thread() {
+
+            @Override
+            public void run() {
+                appElement = app;
+                description = String.format("<html>%s</html>",
+                        appElement.getDescription()
+                                .replaceAll("\r\n", "<br>"));
+                appName = String.format("<html><center>%s</html>",
+                        appElement.getAppName()
+                                .replaceAll("-", "<br>"));
+                image = cvtIcon2Imaga(appElement.getIcon());
+                display();
+            }
+
+        }.start();
+    }
+
+    public void unDisplay() {
+        this.appElement = null;
+        this.lb_icon.setIcon(null);
+        this.lb_icon.setText(null);
     }
 
     /**
@@ -38,9 +131,9 @@ public class AppUnit extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnAppVid = new javax.swing.JPanel();
         lb_icon = new javax.swing.JLabel();
 
-        setBackground(new java.awt.Color(255, 255, 255));
         setAlignmentX(0.1F);
         setAlignmentY(0.1F);
         setPreferredSize(new java.awt.Dimension(100, 120));
@@ -55,102 +148,148 @@ public class AppUnit extends javax.swing.JPanel {
                 formMouseExited(evt);
             }
         });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
+            }
+        });
 
-        lb_icon.setBackground(new java.awt.Color(204, 204, 255));
         lb_icon.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lb_icon.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lb_icon.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         lb_icon.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+
+        javax.swing.GroupLayout pnAppVidLayout = new javax.swing.GroupLayout(pnAppVid);
+        pnAppVid.setLayout(pnAppVidLayout);
+        pnAppVidLayout.setHorizontalGroup(
+            pnAppVidLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnAppVidLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        pnAppVidLayout.setVerticalGroup(
+            pnAppVidLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnAppVidLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
+                .addGap(6, 6, 6))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(15, 15, 15)
+                .addComponent(pnAppVid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(15, 15, 15))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lb_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(13, 13, 13)
+                .addComponent(pnAppVid, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void formMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseEntered
-        // TODO add your handling code here:
+        // TODO add your handling code here: 
         if (isAppAvaiable()) {
-            this.setBackground(this.getBackground().darker());
+            this.pnAppVid.setBackground(bgColor.darker());
+            if (this.description != null) {
+                this.setToolTipText(description);
+            }
         }
     }//GEN-LAST:event_formMouseEntered
 
     private void formMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseClicked
         // TODO add your handling code here:
-        if (isAppAvaiable() && evt.getClickCount() > 1) {
-            this.appElement.run();
+        if (!isAppAvaiable()) {
+            return;
         }
+        if (evt.getClickCount() > 1 && evt.getButton() == MouseEvent.BUTTON1) {
+            if (this.appElement.isRuning()) {
+                stopApp();
+            } else {
+                runApp();
+            }
+        } else if (evt.getButton() == MouseEvent.BUTTON3) {
+            this.popupMenu.show(evt.getComponent(), evt.getX(), evt.getY());
+        }
+
     }//GEN-LAST:event_formMouseClicked
 
     private void formMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseExited
         // TODO add your handling code here:
-        if (isAppAvaiable()) {
-            this.setBackground(this.getBackground().brighter());
+        if (!isAppAvaiable()) {
+            return;
         }
+        this.pnAppVid.setBackground(bgColor);
     }//GEN-LAST:event_formMouseExited
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+        // TODO add your handling code here:
+        if (!isAppAvaiable()) {
+            return;
+        }
+        showIcon();
+    }//GEN-LAST:event_formComponentResized
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel lb_icon;
+    private javax.swing.JPanel pnAppVid;
     // End of variables declaration//GEN-END:variables
 
-    void display() {
+    private void display() {
         if (!isAppAvaiable()) {
             return;
         }
-        if (this.appElement.getIcon() == null) {
-            this.lb_icon.setIcon(getDefaultImage());
+        showIcon();
+        showAppName();
+    }
+
+    private void showAppName() {
+        this.lb_icon.setVisible(false);
+        this.lb_icon.setText(appName);
+        this.lb_icon.setVisible(true);
+    }
+
+    private void showIcon() {
+        if (image != null) {
+            this.lb_icon.setIcon(resizeIcon(image));
         } else {
-            this.lb_icon.setIcon(createIcon(this.appElement.getIcon()));
+            this.lb_icon.setIcon(getDefaultImage());
         }
-        this.lb_icon.setText(this.appElement.getName());
     }
 
-    private boolean isAppAvaiable() {
-        return this.appElement != null && this.appElement.getName() != null && this.appElement.getRunFile() != null;
-    }
-
-    private ImageIcon createIcon(File icon) {
-        try {
-            BufferedImage image = ImageIO.read(icon);
-            return new ImageIcon(resizeIcon(image));
-        } catch (IOException ex) {
+    private Image cvtIcon2Imaga(Icon icon) {
+        if (icon == null) {
             return null;
         }
+        if (icon instanceof ImageIcon) {
+            return ((ImageIcon) icon).getImage();
+        } else {
+            BufferedImage image = new BufferedImage(icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+            icon.paintIcon(null, image.getGraphics(), 0, 0);
+            return image;
+        }
     }
 
-    private ImageIcon getDefaultImage() {
+    private Icon getDefaultImage() {
         try {
-            return new ImageIcon(resizeIcon(ImageIO.read(getClass().getResource("empty.png"))));
+            return resizeIcon(ImageIO.read(getClass().getResource("empty.png")));
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    private Image resizeIcon(BufferedImage bufferedImage) {
-        return bufferedImage.getScaledInstance(
-                (int) (this.lb_icon.getWidth() * 0.8),
-                (int) (this.lb_icon.getHeight() * 0.6),
-                Image.SCALE_AREA_AVERAGING);
+    private synchronized Icon resizeIcon(Image image) {
+        int middleSize = (int) (((this.lb_icon.getWidth() + this.lb_icon.getHeight()) / 2) * 0.5);
+        return new ImageIcon(image.getScaledInstance(middleSize, middleSize, Image.SCALE_SMOOTH));
     }
 
-    void setAppParameter(AppElement appElement) {
-        if (appElement == null) {
-            return;
-        }
-        this.appElement = appElement;
-    }
 }

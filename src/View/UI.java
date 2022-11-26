@@ -4,15 +4,15 @@
  */
 package View;
 
-import Model.App.AppElement;
-import Model.Servants;
-import Model.Socket.ClientSender;
+import Control.ClientRunner;
+import Model.AllKeyword;
+import Model.Socket.ThisClieant.ClientSender;
 import Model.Source.Setting;
 import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.util.List;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -21,15 +21,15 @@ import javax.swing.JOptionPane;
 public class UI extends javax.swing.JFrame {
 
     private final Setting setting;
-    private final Servants servants;
+    private final ClientRunner clientRunner;
+    private final ClientSender sender;
 
     /**
      * Creates new form UI
      *
      * @param title
-     * @param servants
      */
-    public UI(String title, Servants servants) {
+    public UI(String title) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -55,20 +55,19 @@ public class UI extends javax.swing.JFrame {
 
         /* Create and display the form */
         this.storePanel = new StorePanel();
+        this.clientRunner = ClientRunner.getInstanse();
+        this.sender = this.clientRunner.getSender();
         initComponents();
         this.setting = Setting.getInstance();
-        this.servants = servants;
         this.setIconImage(Toolkit.getDefaultToolkit().createImage(this.setting.getMyIconPath()));
         this.setTitle(title);
-        this.storePanel.setGridZise(3, 5);
-    }
-
-    public boolean addApps(List<AppElement> apps) {
-        return this.storePanel.addApps(apps);
-    }
-
-    public boolean addAppParameter(int index, AppElement appParamater) {
-        return this.storePanel.addApp(index, appParamater);
+        this.storePanel.setGridZise(this.setting.getGirdRow(), this.setting.getGirdColumn());
+        this.lb_serverName.setText(String.format("%s - %s",
+                this.setting.getString(AllKeyword.SERVER.SERVER_HOST),
+                this.setting.getString(AllKeyword.SERVER.SERVER_PORT)));
+        new Timer(1000, (e) -> {
+            setServerConnect(clientRunner.isConnect());
+        }).start();
     }
 
     /**
@@ -84,8 +83,11 @@ public class UI extends javax.swing.JFrame {
         storeBackground = this.storePanel;
         pn_connect = new javax.swing.JPanel();
         lb_serverName = new javax.swing.JLabel();
-        lb_update = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        lbBottom = new javax.swing.JLabel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 formKeyPressed(evt);
@@ -94,7 +96,6 @@ public class UI extends javax.swing.JFrame {
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 255));
 
-        storeBackground.setBackground(new java.awt.Color(214, 214, 255));
         storeBackground.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         storeBackground.setAutoscrolls(true);
 
@@ -102,14 +103,14 @@ public class UI extends javax.swing.JFrame {
         storeBackground.setLayout(storeBackgroundLayout);
         storeBackgroundLayout.setHorizontalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 588, Short.MAX_VALUE)
         );
         storeBackgroundLayout.setVerticalGroup(
             storeBackgroundLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 421, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        pn_connect.setBackground(new java.awt.Color(51, 255, 51));
+        pn_connect.setBackground(new java.awt.Color(255, 0, 0));
 
         lb_serverName.setBackground(new java.awt.Color(204, 204, 255));
         lb_serverName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -117,35 +118,45 @@ public class UI extends javax.swing.JFrame {
         lb_serverName.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         lb_serverName.setOpaque(true);
 
-        lb_update.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        lb_update.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lb_update.setText("Update");
-        lb_update.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        lb_update.setOpaque(true);
-        lb_update.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                lb_updateMouseClicked(evt);
-            }
-        });
-
         javax.swing.GroupLayout pn_connectLayout = new javax.swing.GroupLayout(pn_connect);
         pn_connect.setLayout(pn_connectLayout);
         pn_connectLayout.setHorizontalGroup(
             pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pn_connectLayout.createSequentialGroup()
-                .addGap(25, 25, 25)
-                .addComponent(lb_update, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(35, 35, 35)
-                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addGroup(pn_connectLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(16, 16, 16))
         );
         pn_connectLayout.setVerticalGroup(
             pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(pn_connectLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(pn_connectLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
-                    .addComponent(lb_update, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(lb_serverName, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton1.setText("Update");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(330, Short.MAX_VALUE)
+                .addComponent(jButton1)
                 .addContainerGap())
         );
 
@@ -157,7 +168,10 @@ public class UI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pn_connect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -166,35 +180,38 @@ public class UI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(pn_connect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(storeBackground, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
+
+        lbBottom.setBackground(new java.awt.Color(204, 204, 204));
+        lbBottom.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbBottom.setOpaque(true);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lbBottom, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(lbBottom, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
 
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
-
-    private void lb_updateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lb_updateMouseClicked
-        // TODO add your handling code here:
-        if (evt.getClickCount() > 1) {
-            if (!this.servants.getClientSender().update()) {
-                JOptionPane.showMessageDialog(null, "Update failed!");
-            }
-        }
-    }//GEN-LAST:event_lb_updateMouseClicked
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
         // TODO add your handling code here:
@@ -207,6 +224,13 @@ public class UI extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formKeyPressed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        if (!this.sender.reDownloadAllProgram()) {
+            JOptionPane.showMessageDialog(null, "Update failed!");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     public void display() {
         java.awt.EventQueue.invokeLater(() -> {
             this.setVisible(true);
@@ -214,9 +238,11 @@ public class UI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JLabel lbBottom;
     private javax.swing.JLabel lb_serverName;
-    private javax.swing.JLabel lb_update;
     private javax.swing.JPanel pn_connect;
     private javax.swing.JPanel storeBackground;
     // End of variables declaration//GEN-END:variables
@@ -226,11 +252,19 @@ public class UI extends javax.swing.JFrame {
         this.lb_serverName.setText(format);
     }
 
-    public void setServerConnect(boolean connect) {
+    private void setServerConnect(boolean connect) {
         if (connect) {
-            this.pn_connect.setBackground(Color.green);
+            if (this.pn_connect.getBackground().equals(Color.red)) {
+                this.pn_connect.setBackground(Color.green);
+            }
         } else {
-            this.pn_connect.setBackground(Color.red);
+            if (this.pn_connect.getBackground().equals(Color.GREEN)) {
+                this.pn_connect.setBackground(Color.red);
+            }
         }
+    }
+
+    public StorePanel getStorePanel() {
+        return this.storePanel;
     }
 }

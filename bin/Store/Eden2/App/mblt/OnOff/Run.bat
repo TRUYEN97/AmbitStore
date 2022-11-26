@@ -1,0 +1,1 @@
+java -Xms1g -jar UIEngine.jar

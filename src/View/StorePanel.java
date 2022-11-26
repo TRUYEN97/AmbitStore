@@ -4,9 +4,11 @@
  */
 package View;
 
-import Model.App.AppElement;
+import Model.Application.AppEntity.IappParameter;
+import java.awt.Color;
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,53 +18,28 @@ import java.util.List;
 public class StorePanel extends javax.swing.JPanel {
 
     private final List<AppUnit> appUnits;
+    private final HashMap<IappParameter, AppUnit> apps;
 
     /**
      * Creates new form StorePanel
      */
     public StorePanel() {
         this.appUnits = new ArrayList<>();
+        this.apps = new HashMap<>();
         initComponents();
     }
 
     public void setGridZise(int rows, int columns) {
         this.removeAll();
-        this.setLayout(new GridLayout(rows, columns,10,10));
+        this.setLayout(new GridLayout(rows, columns, 0, 0));
         AppUnit appUnit;
+        Color backgroundColor = this.getBackground();
         for (int i = 0; i < rows * columns; i++) {
-            appUnit = new AppUnit();
-            appUnit.setBackground(this.getBackground());
+            appUnit = new AppUnit(backgroundColor);
             this.add(appUnit);
             this.appUnits.add(appUnit);
         }
         this.validate();
-    }
-
-    boolean addApps(List<AppElement> apps) {
-        for (AppElement app : apps) {
-            if (!addApp(apps.indexOf(app), app)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    boolean addApp(int index, AppElement paramater) {
-        if (index >= this.appUnits.size() || index < 0) {
-            return false;
-        }
-        AppUnit appUnit = this.appUnits.get(index);
-        appUnit.setAppParameter(paramater);
-        appUnit.display();
-        this.updateUI();
-        return true;
-    }
-
-    public void display() {
-        this.validate();
-        for (AppUnit appUnit : appUnits) {
-            appUnit.display();
-        }
     }
 
     /**
@@ -87,6 +64,32 @@ public class StorePanel extends javax.swing.JPanel {
             .addGap(0, 294, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    void clear() {
+        for (AppUnit appUnit : appUnits) {
+            if (appUnit.isAppAvaiable()) {
+                appUnit.unDisplay();
+            }
+        }
+    }
+
+
+    public void updateApp(IappParameter app) {
+        if (this.apps.containsKey(app)) {
+            AppUnit appUnit = this.apps.get(app);
+            appUnit.setApp(app);
+        }else{
+            AppUnit appUnit = this.appUnits.get(this.apps.size());
+            this.apps.put(app, appUnit);
+            appUnit.setApp(app);
+        }
+    }
+
+    public void deleteApp(IappParameter project) {
+        if (this.apps.containsKey(project)) {
+            this.apps.get(project).unDisplay();
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

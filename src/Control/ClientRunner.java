@@ -4,15 +4,13 @@
  */
 package Control;
 
-import Model.Socket.ClientSender;
+import Model.Socket.ThisClieant.ClientSender;
 import Model.AllKeyword;
-import Model.Servants;
+import Model.Application.AppDownload;
+import Model.Socket.ThisClieant.ClientReceiver;
 import Model.Source.Setting;
 import Unicast.Client.Client;
 import Unicast.commons.Actions.simplePackage;
-import View.UI;
-import java.io.IOException;
-import javax.swing.Timer;
 
 /**
  *
@@ -20,39 +18,45 @@ import javax.swing.Timer;
  */
 public class ClientRunner implements Runnable {
 
+    private static volatile ClientRunner instanse;
     private final Client<simplePackage> client;
-    private final UI display;
     private final Thread thread;
     private final ClientSender sender;
+    private final ClientReceiver clientReceiver;
 
-    public ClientRunner(UI display, Servants servants) throws IOException {
-        this.client = new Client(servants.getClientReceiver());
-        this.display = display;
-        this.sender = servants.getClientSender();
-        this.sender.setClient(client);
-        new Timer(500, (e) -> {
-            display.setServerConnect(this.client.isConnect());
-        }).start();
+    private ClientRunner(){
+        this.clientReceiver = new ClientReceiver();
+        this.client = new Client<>(clientReceiver);
+        this.sender = new ClientSender(client);
+        this.clientReceiver.setSender(sender);
         this.thread = new Thread(this);
+    }
+
+    public static ClientRunner getInstanse() {
+        ClientRunner ins = ClientRunner.instanse;
+        if (ins == null) {
+            synchronized (ClientRunner.class) {
+                ins = ClientRunner.instanse;
+                if (ins == null) {
+                    ins = instanse = new ClientRunner();
+                }
+            }
+        }
+        return ins;
     }
 
     public void start() {
         this.thread.start();
     }
 
-    public void stop() {
-        this.thread.stop();
-    }
-
     @Override
     public void run() {
         while (true) {
-            if (client.isConnect()) {
+            if (this.client.isConnect()) {
                 client.run();
             } else {
-                String host = Setting.getInstance().getString(AllKeyword.SERVER_HOST);
-                int port = Setting.getInstance().getInteger(AllKeyword.SERVER_PORT);
-                display.showServerAddr(String.format("Host: %s  -  Post: %s", host, port));
+                String host = Setting.getInstance().getString(AllKeyword.SERVER.SERVER_HOST);
+                int port = Setting.getInstance().getInteger(AllKeyword.SERVER.SERVER_PORT);
                 if (this.client.connect(host, port)) {
                     sender.sendMyName();
                 }
@@ -62,7 +66,18 @@ public class ClientRunner implements Runnable {
             } catch (InterruptedException ex) {
             }
         }
+    }
 
+    public ClientSender getSender() {
+        return this.sender;
+    }
+
+    public boolean isConnect() {
+        return client.isConnect() && this.clientReceiver.usedToReceive();
+    }
+
+    public void setAppDownLoad(AppDownload appDownload) {
+        this.clientReceiver.setAppDownload(appDownload);
     }
 
 }

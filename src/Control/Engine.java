@@ -4,11 +4,11 @@
  */
 package Control;
 
-import Model.Socket.ClientReceiver;
-import Model.Socket.ClientSender;
-import Model.Servants;
+import Model.Application.AppDownload;
+import Model.Application.AppPackage;
 import SystemTray.MySystemTray;
 import Model.Source.Setting;
+import Unicast.commons.Actions.simplePackage;
 import View.UI;
 import java.awt.AWTException;
 import java.io.IOException;
@@ -21,22 +21,23 @@ import javax.swing.JOptionPane;
 public class Engine {
 
     private final UI ui;
-    private final Core core;
     private final MySystemTray systemTray;
-    private final Servants servants;
     private final String title;
+    private final ClientRunner clientRunner;
+    private final ServerStore serverStore;
 
-    public Engine(String title) throws IOException {
+    public Engine(String title) throws IOException, Exception {
         this.title = title;
-        this.servants = new Servants();
-        this.ui = new UI(title, this.servants);
-        this.core = new Core(this.ui, this.servants);
+        this.ui = new UI(title);
+        this.clientRunner = ClientRunner.getInstanse();
+        AppPackage appPackage = new AppPackage(ui.getStorePanel(), clientRunner.getSender());
+        this.serverStore = new ServerStore(appPackage);
+        appPackage.setServerStore(serverStore.getStoreServerManage().getOnlineNumble());
+        clientRunner.setAppDownLoad(new AppDownload(appPackage));
         this.systemTray = new MySystemTray(ui);
     }
 
     public void run() {
-        this.core.run();
-        this.systemTray.initSystemTray();
         if (!this.systemTray.initTrayIcon(Setting.getInstance().getMyIconPath(), this.title)) {
             JOptionPane.showConfirmDialog(null, "SystemTray not support!");
         }
@@ -45,6 +46,8 @@ public class Engine {
         } catch (AWTException ex) {
             ex.printStackTrace();
         }
+        ClientRunner.getInstanse().start();
+        this.serverStore.start();
         this.ui.display();
     }
 

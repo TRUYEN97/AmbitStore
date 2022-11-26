@@ -56,6 +56,14 @@ public class Setting {
         return this.setting.getInteger(key);
     }
     
+    public Integer getGirdRow() {
+        return this.setting.getInteger(AllKeyword.GRID_ROW);
+    }
+    
+    public Integer getGirdColumn() {
+        return this.setting.getInteger(AllKeyword.GRID_COLUMN);
+    }
+    
     public String getString(String key) {
         return this.setting.getString(key);
     }
@@ -78,5 +86,19 @@ public class Setting {
     
     public String getRunFile() {
         return getString(AllKeyword.RUN_FILE);
+    }
+
+    public String getTempFolder() {
+        return getString(AllKeyword.TEMP_FOLDER);
+    }
+
+    public String getRunCommand(String afterDoc) {
+        JSONObject appRunCmd = this.setting.getJSONObject(AllKeyword.APP_RUN_COMMAND);
+        String cmd = appRunCmd.getString(afterDoc);
+        return cmd == null? "": cmd;
+    }
+
+    public int getPortStoreServer() {
+        return setting.getInteger(AllKeyword.SERVER.STORE_SERVER_PORT);
     }
 }

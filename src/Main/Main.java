@@ -6,11 +6,11 @@ package Main;
 
 import Control.Engine;
 import Model.Loger;
+import Model.MyProccessHandle;
 import Model.Source.Setting;
 import Robot.MyControl;
 import Robot.W32API.HWND;
 import Time.TimeBase;
-import java.io.IOException;
 
 /**
  *
@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class Main {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         String version = Setting.getInstance().getVersion();
         String title = String.format("AmbitStore - %s", version == null ? "" : version);
@@ -28,10 +28,10 @@ public class Main {
             return;
         }
         try {
-            String filePath = String.format("log/%s", new TimeBase().getDate());
+            String filePath = String.format("log/%s.txt", new TimeBase(TimeBase.UTC).getDate());
             Loger.getInstance().init(filePath);
             new Engine(title).run();
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
